@@ -17,19 +17,18 @@ This codebase was tested with the following environment configurations.
 Please refer to PointNeXt to install other required packages and download datasets.
 
 ## Usage
-To stabilize the training process, the first step is to train using only labeled data. Then, set this pre-trained model path in cfg_s3dis.yaml file to conduct weakly supervised training.
-````
-run ./UCL/main.py
-````
+Train ./JoPro/s3dis_active.py
+Test ./JoPro/s3dis_test.py
 
 ## Citation
 ````
-@article{yao2024uncertainty,
-  title={Uncertainty-guided Contrastive Learning for Weakly Supervised Point Cloud Segmentation},
-  author={Yao, Baochen and Dong, Li and Qiu, Xiaojie and Song, Kangkang and Yan, Diqun and Peng, Chengbin},
-  journal={IEEE Transactions on Geoscience and Remote Sensing},
-  year={2024},
-  publisher={IEEE}
+@article{yao2025active,
+  title={Active Learning with Joint Probabilistic Modeling for Point Cloud Semantic Segmentation},
+  author={Yao, Baochen and Zhang, Dongjie and Zhao, Jie and Zheng, Ye and Peng, Chengbin},
+  journal={Knowledge-Based Systems},
+  pages={114171},
+  year={2025},
+  publisher={Elsevier}
 }
 ````
 
