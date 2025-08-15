@@ -17,8 +17,7 @@ This codebase was tested with the following environment configurations.
 Please refer to PointNeXt to install other required packages and download datasets.
 
 ## Usage
-Train ./JoPro/s3dis_active.py
-Test ./JoPro/s3dis_test.py
+Run s3dis_active.py for training, and run s3dis_test.py for test.
 
 ## Citation
 ````
