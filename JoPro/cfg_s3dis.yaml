@@ -1,0 +1,101 @@
+# ---------------------------------------------------------------------------- #
+# Training cfgs
+# ---------------------------------------------------------------------------- #
+
+active_strategy: ours       
+label_proportion: 0.1       # Total label proportion for active learning: init proportion = label_proportion / 5
+Iterations: 5
+al_epochs: 20
+mix_epochs: 5
+
+flow_lr: 0.01
+
+pre_load: True             # Ensure that all active learning methods have the same starting point, reducing fluctuations
+model_path: /home/ybc/桌面/AL_point/Result/0.1/iter_0.pth
+sever_model_path: /root/S3DIS/iter_0.pth
+
+seed: 1101
+
+epochs_list: [50, 130, 130, 100, 90]  # 50 epochs for warm-up
+minval_list: [0, 0, 0, 0, 0]
+val_freq: 1
+
+num_workers: 12
+train_batch_size: 16
+val_batch_size: 1
+
+criterion_args:
+  NAME: CrossEntropy
+
+sched: cosine
+lr: 0.1
+min_lr: 1.0e-5
+
+grad_norm_clip: 10
+
+# ---------------------------------------------------------------------------- #
+# Dataset
+# ---------------------------------------------------------------------------- #
+num_classes: 13
+ignore_index: -1000
+
+dataset:
+  name: S3DIS
+  data_root: /home/ybc/桌面/Dataset/
+  sever_data_root: /root/
+  train_step: 12
+  voxel_max: 8000
+  voxel_size: 0.04
+
+
+# data augmentation
+data_transforms:
+  train: [ChromaticAutoContrast, PointsToTensor, PointCloudScaling, PointCloudXYZAlign, PointCloudRotation, PointCloudJitter, ChromaticDropGPU, ChromaticNormalize]
+  val: [PointsToTensor, PointCloudXYZAlign, ChromaticNormalize]
+  al: [PointsToTensor, PointCloudXYZAlign, ChromaticNormalize]
+  vote: [ChromaticDropGPU]
+  kwargs:
+    color_drop: 0.2
+    gravity_dim: 2
+    scale: [0.9, 1.1]
+    angle: [0, 0, 1]
+    jitter_sigma: 0.005
+    jitter_clip: 0.02
+
+# ---------------------------------------------------------------------------- #
+# Model Information
+# ---------------------------------------------------------------------------- #
+model:
+  NAME: BaseSeg
+  feature_out_dim: 32
+  encoder_args:
+    NAME: PointMetaBaseEncoder   # PointNextEncoder  PointMetaBaseEncoder
+    blocks: [1, 3, 5, 3, 3]
+    strides: [1, 4, 4, 4, 4]
+    sa_layers: 1
+    sa_use_res: False
+    width: 32
+    in_channels: 4
+    expansion: 1  # 4
+    radius: 0.1
+    nsample: 32
+    aggr_args:
+      feature_type: 'dp_fj'
+      reduction: 'max'
+    group_args:
+      NAME: 'ballquery'
+      normalize_dp: True
+    conv_args:
+      order: conv-norm-act
+    act_args:
+      act: 'relu'
+    norm_args:
+      norm: 'bn'
+  decoder_args:
+    NAME: PointNextDecoder
+  cls_args:
+    NAME: SegHead
+    num_classes: 13
+    in_channels: null
+    norm_args:
+      norm: 'bn'
